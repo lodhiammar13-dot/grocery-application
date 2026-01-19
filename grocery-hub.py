@@ -1,5 +1,4 @@
-
-      import streamlit as st
+import streamlit as st
 from datetime import datetime
 
 # Page configuration
@@ -448,3 +447,4 @@ with col3:
     st.markdown("24/7 Online")
 
 st.markdown(f"<p style='text-align: center; color: gray;'>© 2026 Grocery Hub. All rights reserved. | Last updated: {datetime.now().strftime('%B %d, %Y')}</p>", unsafe_allow_html=True)
+
