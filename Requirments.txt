@@ -1,0 +1,2 @@
+REQUIRMENTS:
+install streamlit
