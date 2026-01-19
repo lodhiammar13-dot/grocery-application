@@ -402,6 +402,12 @@ with tab2:
             st.markdown(f"${tax:.2f}")
             st.markdown(f"**${total:.2f}**")
         
+        # Items list without prices
+        st.markdown("---")
+        st.markdown("### 📋 Items in Your Cart")
+        for idx, (item, data) in enumerate(st.session_state.cart.items(), 1):
+            st.markdown(f"{idx}. {item} (x{data['quantity']})")
+        
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown("")
@@ -447,4 +453,3 @@ with col3:
     st.markdown("24/7 Online")
 
 st.markdown(f"<p style='text-align: center; color: gray;'>© 2026 Grocery Hub. All rights reserved. | Last updated: {datetime.now().strftime('%B %d, %Y')}</p>", unsafe_allow_html=True)
-
