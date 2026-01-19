@@ -105,11 +105,7 @@ GROCERY_DATA = {
         "Greek Yogurt (500g)": 3.99,
         "Butter (250g)": 3.49,
         "Cream Cheese (227g)": 2.99,
-        "Sour Cream (250ml)": 2.49,
-        "Feta Cheese (200g)": 4.79,
-        "Cottage Cheese (500g)": 3.99,
-        "Evaporated Milk (400ml)": 1.99,
-        "Condensed Milk (395g)": 2.49
+        "Sour Cream (250ml)": 2.49
     },
     "🧹 Cleaning Agents": {
         "Dish Soap (500ml)": 3.99,
@@ -119,11 +115,7 @@ GROCERY_DATA = {
         "Floor Cleaner (1L)": 5.99,
         "Bleach (1L)": 2.99,
         "Paper Towels (6 rolls)": 8.99,
-        "Sponges (5 pack)": 3.49,
-        "Toilet Cleaner (500ml)": 4.49,
-        "Disinfectant Spray (500ml)": 5.99,
-        "Microfiber Cloth (3 pack)": 6.49,
-        "Garbage Bags (20 pack)": 7.99
+        "Sponges (5 pack)": 3.49
     },
     "🍎 Fruits": {
         "Apples (1kg)": 3.99,
@@ -135,11 +127,7 @@ GROCERY_DATA = {
         "Mangoes (each)": 2.49,
         "Pineapple (each)": 3.99,
         "Blueberries (250g)": 5.49,
-        "Avocado (each)": 1.99,
-        "Cherries (250g)": 6.99,
-        "Pears (1kg)": 3.99,
-        "Kiwi (each)": 1.29,
-        "Papaya (each)": 3.49
+        "Avocado (each)": 1.99
     },
     "🥕 Vegetables": {
         "Carrots (1kg)": 2.49,
@@ -151,24 +139,17 @@ GROCERY_DATA = {
         "Potatoes (2kg)": 4.99,
         "Lettuce (head)": 2.49,
         "Spinach (bunch)": 2.99,
-        "Garlic (bulb)": 0.99,
-        "Cabbage (1kg)": 2.49,
-        "Cauliflower (head)": 3.49,
-        "Zucchini (1kg)": 3.29,
-        "Green Beans (500g)": 3.99
+        "Garlic (bulb)": 0.99
     },
-    
     "🥩 Meats": {
         "Ground Beef (500g)": 8.99,
         "Beef Steak (500g)": 14.99,
+        "Pork Chops (500g)": 9.99,
         "Lamb Chops (500g)": 16.99,
-        "Sausages (6 pack, Halal)": 7.49,
-        "Ham Slices (200g, Halal Turkey or Beef)": 5.99,
-        "Veal Cutlets (500g)": 13.49,
-        "Ground Chicken (500g)": 7.99,
-        "Beef Ribs (1kg)": 18.99
+        "Bacon (250g)": 6.99,
+        "Sausages (6 pack)": 7.49,
+        "Ham Slices (200g)": 5.99
     },
-
     "🍗 Poultry": {
         "Chicken Breast (500g)": 8.49,
         "Chicken Thighs (500g)": 6.99,
@@ -176,10 +157,7 @@ GROCERY_DATA = {
         "Chicken Wings (1kg)": 9.99,
         "Ground Chicken (500g)": 7.99,
         "Turkey Breast (500g)": 10.99,
-        "Chicken Drumsticks (1kg)": 7.49,
-        "Duck (whole)": 14.99,
-        "Turkey Legs (1kg)": 11.99,
-        "Quail (each)": 4.49
+        "Chicken Drumsticks (1kg)": 7.49
     },
     "📱 Electronics": {
         "USB Cable (1m)": 9.99,
@@ -189,11 +167,7 @@ GROCERY_DATA = {
         "Screen Protector": 12.99,
         "Phone Charger": 19.99,
         "Memory Card (32GB)": 15.99,
-        "HDMI Cable (2m)": 11.99,
-        "Wireless Mouse": 19.99,
-        "Bluetooth Speaker": 34.99,
-        "Laptop Charger": 39.99,
-        "Smartwatch": 79.99
+        "HDMI Cable (2m)": 11.99
     },
     "🍿 Snacks": {
         "Potato Chips (200g)": 3.99,
@@ -205,11 +179,7 @@ GROCERY_DATA = {
         "Granola Bars (6 pack)": 5.49,
         "Crackers (250g)": 3.79,
         "Candy Mix (300g)": 4.49,
-        "Trail Mix (250g)": 5.99,
-        "Gummy Bears (200g)": 3.49,
-        "Chocolate Chips (250g)": 4.49,
-        "Rice Cakes (200g)": 2.99,
-        "Beef Jerky (100g)": 6.99
+        "Trail Mix (250g)": 5.99
     }
 }
 
@@ -348,6 +318,38 @@ with tab1:
 with tab2:
     st.markdown("## Your Shopping Cart")
     
+    # Custom item addition
+    st.markdown("### ➕ Add Custom Item")
+    col1, col2, col3 = st.columns([3, 1, 1])
+    
+    with col1:
+        custom_item_name = st.text_input(
+            "Item Name",
+            placeholder="Enter custom item name...",
+            key="custom_item_name"
+        )
+    
+    with col2:
+        custom_item_price = st.number_input(
+            "Price ($)",
+            min_value=0.01,
+            value=1.00,
+            step=0.01,
+            key="custom_item_price"
+        )
+    
+    with col3:
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Add Item", key="add_custom", use_container_width=True, type="primary"):
+            if custom_item_name.strip():
+                add_to_cart(custom_item_name, custom_item_price, "🛍️ Custom Items")
+                st.success(f"Added {custom_item_name}!")
+                st.rerun()
+            else:
+                st.error("Please enter an item name")
+    
+    st.markdown("---")
+    
     if st.session_state.cart:
         st.markdown('<div class="cart-summary">', unsafe_allow_html=True)
         
@@ -428,6 +430,21 @@ with tab2:
                 st.markdown(f"### {category}")
                 st.markdown(f"{len(GROCERY_DATA[category])} items")
 
+# Footer
+st.markdown("---")
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("📞 **Customer Service**")
+    st.markdown("1-800-GROCERY")
+
+with col2:
+    st.markdown("📧 **Email**")
+    st.markdown("support@groceryhub.com")
+
+with col3:
+    st.markdown("🕒 **Hours**")
+    st.markdown("24/7 Online")
 
 st.markdown(f"<p style='text-align: center; color: gray;'>© 2026 Grocery Hub. All rights reserved. | Last updated: {datetime.now().strftime('%B %d, %Y')}</p>", unsafe_allow_html=True)
 
