@@ -428,21 +428,7 @@ with tab2:
                 st.markdown(f"### {category}")
                 st.markdown(f"{len(GROCERY_DATA[category])} items")
 
-# Footer
-st.markdown("---")
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("📞 **Customer Service**")
-    st.markdown("1-800-GROCERY")
-
-with col2:
-    st.markdown("📧 **Email**")
-    st.markdown("lodhiammar13@gmail.com")
-
-with col3:
-    st.markdown("🕒 **Hours**")
-    st.markdown("24/7 Online")
 
 st.markdown(f"<p style='text-align: center; color: gray;'>© 2026 Grocery Hub. All rights reserved. | Last updated: {datetime.now().strftime('%B %d, %Y')}</p>", unsafe_allow_html=True)
+
 
