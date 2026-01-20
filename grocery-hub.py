@@ -145,11 +145,10 @@ GROCERY_DATA = {
     "🥩 Meats": {
         "Ground Beef (500g)": 8.99,
         "Beef Steak (500g)": 14.99,
-        "Pork Chops (500g)": 9.99,
+        
         "Lamb Chops (500g)": 16.99,
-        "Bacon (250g)": 6.99,
-        "Sausages (6 pack)": 7.49,
-        "Ham Slices (200g)": 5.99
+        "Halal Bacon (250g)": 6.99,
+        "Halal Sausages (6 pack)": 7.49
     },
     "🍗 Poultry": {
         "Chicken Breast (500g)": 8.49,
@@ -227,27 +226,19 @@ def format_cart_for_whatsapp():
             categories[category] = []
         categories[category].append((item, data))
     
-    # Format by category
+    # Format by category (without prices)
     for category, items in categories.items():
         message += f"*{category}*\n"
         for item, data in items:
-            message += f"  ▪️ {item} (x{data['quantity']}) - ${data['price'] * data['quantity']:.2f}\n"
+            message += f"  ▪️ {item} (x{data['quantity']})\n"
         message += "\n"
     
-    # Add totals
-    subtotal = calculate_total()
-    tax = subtotal * 0.08
-    total = subtotal + tax
-    
     message += "─" * 30 + "\n"
-    message += f"*Subtotal:* ${subtotal:.2f}\n"
-    message += f"*Tax (8%):* ${tax:.2f}\n"
-    message += f"*TOTAL:* ${total:.2f}\n"
-    message += "─" * 30 + "\n\n"
     message += f"📅 {datetime.now().strftime('%B %d, %Y at %I:%M %p')}\n"
     message += "\nThank you for shopping with Grocery Hub! 🙏"
     
     return message
+
 
 def send_to_whatsapp(phone_number):
     """Generate WhatsApp link with formatted message"""
@@ -540,3 +531,4 @@ with col3:
     st.markdown("24/7 Online")
 
 st.markdown(f"<p style='text-align: center; color: gray;'>© 2026 Grocery Hub. All rights reserved. | Last updated: {datetime.now().strftime('%B %d, %Y')}</p>", unsafe_allow_html=True)
+
