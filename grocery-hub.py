@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+import urllib.parse
 
 # Page configuration
 st.set_page_config(
@@ -210,6 +211,60 @@ def calculate_total():
         total += item_data['price'] * item_data['quantity']
     return total
 
+def format_cart_for_whatsapp():
+    """Format cart items for WhatsApp message"""
+    if not st.session_state.cart:
+        return "Your cart is empty!"
+    
+    message = "🛒 *GROCERY HUB - Shopping List*\n"
+    message += "═" * 30 + "\n\n"
+    
+    # Group by category
+    categories = {}
+    for item, data in st.session_state.cart.items():
+        category = data['category']
+        if category not in categories:
+            categories[category] = []
+        categories[category].append((item, data))
+    
+    # Format by category
+    for category, items in categories.items():
+        message += f"*{category}*\n"
+        for item, data in items:
+            message += f"  ▪️ {item} (x{data['quantity']}) - ${data['price'] * data['quantity']:.2f}\n"
+        message += "\n"
+    
+    # Add totals
+    subtotal = calculate_total()
+    tax = subtotal * 0.08
+    total = subtotal + tax
+    
+    message += "─" * 30 + "\n"
+    message += f"*Subtotal:* ${subtotal:.2f}\n"
+    message += f"*Tax (8%):* ${tax:.2f}\n"
+    message += f"*TOTAL:* ${total:.2f}\n"
+    message += "─" * 30 + "\n\n"
+    message += f"📅 {datetime.now().strftime('%B %d, %Y at %I:%M %p')}\n"
+    message += "\nThank you for shopping with Grocery Hub! 🙏"
+    
+    return message
+
+def send_to_whatsapp(phone_number):
+    """Generate WhatsApp link with formatted message"""
+    # Clean phone number (remove spaces, dashes, etc.)
+    clean_number = ''.join(filter(str.isdigit, phone_number))
+    
+    # Format message
+    message = format_cart_for_whatsapp()
+    
+    # URL encode the message
+    encoded_message = urllib.parse.quote(message)
+    
+    # Create WhatsApp link
+    whatsapp_url = f"https://wa.me/{clean_number}?text={encoded_message}"
+    
+    return whatsapp_url
+
 def clear_cart():
     st.session_state.cart = {}
 
@@ -410,8 +465,35 @@ with tab2:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
+        # WhatsApp Share Section
+        st.markdown("---")
+        st.markdown("### 📱 Send List via WhatsApp")
+        
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:
+            phone_number = st.text_input(
+                "Enter phone number (with country code)",
+                placeholder="e.g., +1234567890 or 1234567890",
+                help="Enter phone number with country code (e.g., +1 for US, +92 for Pakistan)"
+            )
+        
+        with col2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button("📤 Send to WhatsApp", use_container_width=True, type="primary"):
+                if phone_number:
+                    # Add + if not present
+                    if not phone_number.startswith('+'):
+                        phone_number = '+' + phone_number.strip()
+                    
+                    whatsapp_url = send_to_whatsapp(phone_number)
+                    st.markdown(f'<a href="{whatsapp_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold;">🚀 Open WhatsApp</button></a>', unsafe_allow_html=True)
+                    st.success("Click the button above to open WhatsApp!")
+                else:
+                    st.error("Please enter a phone number")
+        
         st.markdown("")
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         
         with col1:
             if st.button("🗑️ Clear Cart", use_container_width=True, type="secondary"):
@@ -419,6 +501,11 @@ with tab2:
                 st.rerun()
         
         with col2:
+            # Preview message button
+            if st.button("👁️ Preview Message", use_container_width=True):
+                st.text_area("WhatsApp Message Preview:", format_cart_for_whatsapp(), height=300)
+        
+        with col3:
             if st.button("✅ Checkout", use_container_width=True, type="primary"):
                 st.success(f"Order placed successfully! Total: ${total:.2f}")
                 st.balloons()
